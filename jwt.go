@@ -48,7 +48,7 @@ func Base64Decode(str string) (string, error) {
 
 // Hash generates a Hmac256 hash of a string using a secret
 func Hash(str string, secret string) string {
-	key := []byte(str)
+	key := []byte(secret)
 	h := hmac.New(sha256.New, key)
 
 	h.Write([]byte(str))
