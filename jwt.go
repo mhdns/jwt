@@ -8,13 +8,15 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 )
 
 // Payload is used to encode data into a jwt token
 type Payload struct {
-	Expiry string
-	Exp    int
-	Data   interface{}
+	Expiry      string
+	PayloadTime time.Time
+	Exp         int
+	Data        interface{}
 }
 
 // EncodeOPTS allows user to set the algorithm and type of the JWT
@@ -108,9 +110,9 @@ func Decode(jwt string, secret string) (interface{}, error) {
 		return nil, fmt.Errorf("Invalid payload: %s", ParseErr.Error())
 	}
 	// checks if the token has expired.
-	// if payload.Exp != 0 && time.Now().Unix() > payload.Exp {
-	// 	return nil, errors.New("Expired token: token has expired")
-	// }
+	if payload.Exp != 0 && time.Now().Before(payload.PayloadTime.Add(time.Second*time.Duration(payload.Exp*1000))) {
+		return nil, errors.New("Expired token: token has expired")
+	}
 	signatureValue := token[0] + "." + token[1]
 	// verifies if the header and signature is exactly whats in
 	// the signature
