@@ -120,5 +120,3 @@ func Decode(jwt string, secret string) (interface{}, error) {
 	}
 	return payload, nil
 }
-
-// && time.Now().Before(payload.PayloadTime.Add(time.Second*time.Duration(payload.Exp*1000000000)))
